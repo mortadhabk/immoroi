@@ -18,7 +18,14 @@ export const AppShell = ({ children }: AppShellProps) => {
           background: 'linear-gradient(90deg, rgba(11,87,208,0.08), rgba(124,77,255,0.08))',
         }}
       >
-        <Toolbar sx={{ justifyContent: 'space-between', gap: 2, flexWrap: 'wrap' }}>
+        <Toolbar
+          sx={{
+            justifyContent: 'space-between',
+            gap: 2,
+            flexWrap: 'wrap',
+            px: { xs: 1, sm: 3, md: 4 },
+          }}
+        >
           <Box component={RouterLink} to="/" sx={{ textDecoration: 'none' }}>
             <Typography variant="h6" fontWeight={800} color="text.primary">
               ImmoROI
@@ -37,7 +44,7 @@ export const AppShell = ({ children }: AppShellProps) => {
           </Stack>
         </Toolbar>
       </AppBar>
-      <Container maxWidth="lg" sx={{ py: { xs: 3, md: 5 } }}>
+      <Container maxWidth="lg" sx={{ py: { xs: 3, md: 5 }, px: { xs: 1, sm: 3, md: 4 } }}>
         {children}
       </Container>
     </>

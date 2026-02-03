@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Chip, Grid, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, Chip, Stack, Typography } from '@mui/material';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import BoltIcon from '@mui/icons-material/Bolt';
 import ShieldIcon from '@mui/icons-material/Shield';
@@ -53,48 +53,56 @@ export const Home = () => {
         <Typography variant="h4" fontWeight={800}>
           Les bénéfices essentiels
         </Typography>
-        <Grid container spacing={3}>
-          {
-            [
-              {
-                icon: <AutoGraphIcon color="primary" />,
-                title: 'Vision instantanée',
-                text: 'Rendement net annuel et cashflow visibles en un coup d’œil.',
-              },
-              {
-                icon: <BoltIcon color="primary" />,
-                title: 'Saisie ultra rapide',
-                text: 'Ajoutez un bien en quelques minutes, guidé étape par étape.',
-              },
-              {
-                icon: <ShieldIcon color="primary" />,
-                title: 'Fiable et transparent',
-                text: 'Chaque formule est appliquée clairement, sans boîte noire.',
-              },
-            ].map((item) => (
-              <Grid item xs={12} md={4} key={item.title}>
-                <Card variant="outlined" sx={{ height: '100%' }}>
-                  <CardContent>
-                    <Stack spacing={2}>
-                      {item.icon}
-                      <Typography variant="h6" fontWeight={700}>
-                        {item.title}
-                      </Typography>
-                      <Typography color="text.secondary">{item.text}</Typography>
-                    </Stack>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))
-          }
-        </Grid>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' },
+            gap: 3,
+          }}
+        >
+          {[
+            {
+              icon: <AutoGraphIcon color="primary" />,
+              title: 'Vision instantanée',
+              text: 'Rendement net annuel et cashflow visibles en un coup d’œil.',
+            },
+            {
+              icon: <BoltIcon color="primary" />,
+              title: 'Saisie ultra rapide',
+              text: 'Ajoutez un bien en quelques minutes, guidé étape par étape.',
+            },
+            {
+              icon: <ShieldIcon color="primary" />,
+              title: 'Fiable et transparent',
+              text: 'Chaque formule est appliquée clairement, sans boîte noire.',
+            },
+          ].map((item) => (
+            <Card key={item.title} variant="outlined" sx={{ height: '100%' }}>
+              <CardContent>
+                <Stack spacing={2}>
+                  {item.icon}
+                  <Typography variant="h6" fontWeight={700}>
+                    {item.title}
+                  </Typography>
+                  <Typography color="text.secondary">{item.text}</Typography>
+                </Stack>
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
       </Stack>
 
       <Stack spacing={3}>
         <Typography variant="h4" fontWeight={800}>
           Comment ça fonctionne
         </Typography>
-        <Grid container spacing={3}>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' },
+            gap: 3,
+          }}
+        >
           {[
             {
               step: 'Étape 1',
@@ -112,28 +120,32 @@ export const Home = () => {
               text: 'Rendement net annuel, cashflow et mensualités claires.',
             },
           ].map((item) => (
-            <Grid item xs={12} md={4} key={item.title}>
-              <Card variant="outlined" sx={{ height: '100%' }}>
-                <CardContent>
-                  <Stack spacing={1.5}>
-                    <Chip label={item.step} color="secondary" variant="outlined" sx={{ alignSelf: 'flex-start' }} />
-                    <Typography variant="h6" fontWeight={700}>
-                      {item.title}
-                    </Typography>
-                    <Typography color="text.secondary">{item.text}</Typography>
-                  </Stack>
-                </CardContent>
-              </Card>
-            </Grid>
+            <Card key={item.title} variant="outlined" sx={{ height: '100%' }}>
+              <CardContent>
+                <Stack spacing={1.5}>
+                  <Chip label={item.step} color="secondary" variant="outlined" sx={{ alignSelf: 'flex-start' }} />
+                  <Typography variant="h6" fontWeight={700}>
+                    {item.title}
+                  </Typography>
+                  <Typography color="text.secondary">{item.text}</Typography>
+                </Stack>
+              </CardContent>
+            </Card>
           ))}
-        </Grid>
+        </Box>
       </Stack>
 
       <Stack spacing={3}>
         <Typography variant="h4" fontWeight={800}>
           Pourquoi ImmoROI inspire confiance
         </Typography>
-        <Grid container spacing={3}>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' },
+            gap: 3,
+          }}
+        >
           {[
             {
               icon: <InsightsIcon color="primary" />,
@@ -146,21 +158,19 @@ export const Home = () => {
               text: 'Export JSON et gestion multi-biens pour vos analyses.',
             },
           ].map((item) => (
-            <Grid item xs={12} md={6} key={item.title}>
-              <Card variant="outlined" sx={{ height: '100%' }}>
-                <CardContent>
-                  <Stack spacing={2}>
-                    {item.icon}
-                    <Typography variant="h6" fontWeight={700}>
-                      {item.title}
-                    </Typography>
-                    <Typography color="text.secondary">{item.text}</Typography>
-                  </Stack>
-                </CardContent>
-              </Card>
-            </Grid>
+            <Card key={item.title} variant="outlined" sx={{ height: '100%' }}>
+              <CardContent>
+                <Stack spacing={2}>
+                  {item.icon}
+                  <Typography variant="h6" fontWeight={700}>
+                    {item.title}
+                  </Typography>
+                  <Typography color="text.secondary">{item.text}</Typography>
+                </Stack>
+              </CardContent>
+            </Card>
           ))}
-        </Grid>
+        </Box>
       </Stack>
 
       <Card
