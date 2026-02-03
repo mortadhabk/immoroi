@@ -193,11 +193,13 @@ export const ApartmentDetail = () => {
           </Grid>
           <Grid item xs={12} md={4}>
             <NumberField
-              label="Taux annuel (ex: 0.032)"
-              value={apartment.annualInterestRate ?? 0}
-              onChange={(v) => setApartment(apartment.id, { annualInterestRate: v === 0 ? null : v })}
-              helperText="Laisser à 0 pour taux par défaut"
-              step={0.001}
+              label="Taux annuel (%)"
+              value={(apartment.annualInterestRate ?? 0) * 100}
+              onChange={(v) =>
+                setApartment(apartment.id, { annualInterestRate: v === 0 ? null : v / 100 })
+              }
+              helperText="Ex: 3,2 = 3,2 %. Laisser vide ou 0 pour taux par défaut."
+              step={0.1}
             />
           </Grid>
           <Grid item xs={12} md={6}>

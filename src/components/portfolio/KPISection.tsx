@@ -101,7 +101,7 @@ export const KPISection = ({
             <KpiCard
               title="Rendement brut moyen"
               value={grossYield}
-              subtitle="% annuel"
+              subtitle="%"
               icon={<PercentIcon color="primary" />}
               tooltip="Revenus annuels / coût total d'acquisition."
             />

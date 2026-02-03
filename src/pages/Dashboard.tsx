@@ -162,8 +162,8 @@ export const Dashboard = () => {
     const best = [...items].sort((a, b) => b.metrics.cashFlowMonth - a.metrics.cashFlowMonth)[0];
     const marketComparison =
       stats.netYield >= MARKET_AVG
-        ? `Votre rendement net moyen est supérieur à la moyenne du marché (${MARKET_AVG} %/an).`
-        : `Votre rendement net moyen est inférieur à la moyenne du marché (${MARKET_AVG} %/an).`;
+        ? `Votre rendement net moyen est supérieur à la moyenne du marché (${MARKET_AVG} %).`
+        : `Votre rendement net moyen est inférieur à la moyenne du marché (${MARKET_AVG} %).`;
     const highestCharges = [...items].sort((a, b) => b.metrics.totalCharges - a.metrics.totalCharges)[0];
     const optimizationTip = highestCharges
       ? `Opportunité : réduire les charges sur ${highestCharges.apartment.name || 'un bien'} pour améliorer le net.`
@@ -203,7 +203,7 @@ export const Dashboard = () => {
     { name: 'Charges', value: kpis.totalCharges },
   ];
 
-  const formatPercent = (value: number) => `${formatNumber(value)} %/an`;
+  const formatPercent = (value: number) => `${formatNumber(value)} %`;
 
   return (
     <Stack spacing={4}>

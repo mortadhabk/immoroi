@@ -138,7 +138,7 @@ export const Home = () => {
             {
               icon: <InsightsIcon color="primary" />,
               title: 'Des résultats lisibles',
-              text: 'Affichage clair en € et en % annuel, sans ambiguïté.',
+              text: 'Affichage clair en € et en %, sans ambiguïté.',
             },
             {
               icon: <CheckCircleIcon color="primary" />,

@@ -1,11 +1,12 @@
 import { Card, CardContent, Grid, Typography } from '@mui/material';
 import type { ApartmentMetrics } from '../services/calculations/calculations';
 import { formatCurrency, formatNumber } from '../utils/format/currency';
+import { formatPercentAnnual } from '../utils/format/percent';
 
 export const ResultsPanel = ({ metrics }: { metrics: ApartmentMetrics }) => {
   const items = [
     { label: 'Montant emprunté', value: formatCurrency(metrics.loanAmount) },
-    { label: 'Taux annuel appliqué', value: `${formatNumber(metrics.annualRate * 100)} %` },
+    { label: 'Taux annuel appliqué', value: formatPercentAnnual(metrics.annualRate) },
     { label: 'Mensualité', value: formatCurrency(metrics.monthlyPayment) },
     { label: 'Intérêts totaux', value: formatCurrency(metrics.totalInterest) },
     { label: 'Coût total avec prêt', value: formatCurrency(metrics.totalCostWithLoan) },
