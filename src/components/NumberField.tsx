@@ -47,7 +47,8 @@ export const NumberField = ({
 
   useEffect(() => {
     if (!focused) {
-      setDisplay(Number.isFinite(value) ? formatter.format(value) : '');
+      const numeric = typeof value === 'number' ? value : toNumber(String(value), NaN);
+      setDisplay(Number.isFinite(numeric) ? formatter.format(numeric) : '');
     }
   }, [value, focused, formatter]);
 
