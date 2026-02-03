@@ -35,7 +35,11 @@ export const PortfolioHeader = ({ nextAction, stepsStatus, onAdd }: PortfolioHea
             <Typography variant="subtitle2" color="text.secondary">
               Parcours guidé
             </Typography>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={1}
+              sx={{ flexWrap: { xs: 'wrap', sm: 'nowrap' } }}
+            >
               {steps.map((step, index) => (
                 <Chip
                   key={step}
@@ -43,6 +47,7 @@ export const PortfolioHeader = ({ nextAction, stepsStatus, onAdd }: PortfolioHea
                   label={`Étape ${index + 1} · ${step}`}
                   color={stepsStatus[index] ? 'success' : 'default'}
                   variant="outlined"
+                  sx={{ maxWidth: { xs: '100%', sm: 'none' }, whiteSpace: 'normal' }}
                 />
               ))}
             </Stack>

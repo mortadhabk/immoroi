@@ -66,7 +66,7 @@ export const PropertyList = ({
 }: PropertyListProps) => {
   return (
     <Stack spacing={2}>
-      <Grid container spacing={2} alignItems="center">
+      <Grid container spacing={1} alignItems="center" sx={{ mx: { xs: -0.5, sm: 0 } }}>
         <Grid item xs={12} md={4}>
           <TextField
             fullWidth
@@ -141,7 +141,7 @@ export const PropertyList = ({
         </Grid>
       </Grid>
 
-      <Divider />
+      <Divider sx={{ mx: { xs: -0.5, sm: 0 } }} />
 
       {items.length === 0 && (
         <EmptyState
@@ -157,6 +157,7 @@ export const PropertyList = ({
             display: 'grid',
             gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' },
             gap: 3,
+            mx: { xs: -0.5, sm: 0 },
           }}
         >
           {items.map((item) => {
