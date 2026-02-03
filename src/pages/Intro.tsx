@@ -54,7 +54,7 @@ export const Intro = () => {
           startIcon={<RocketLaunchIcon />}
           onClick={() => {
             markIntroSeen();
-            navigate('/');
+            navigate('/portfolio');
           }}
         >
           Démarrer le simulateur

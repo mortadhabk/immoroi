@@ -5,6 +5,7 @@ import { ApartmentDetail } from './pages/ApartmentDetail';
 import { Comparator } from './pages/Comparator';
 import { Intro } from './pages/Intro';
 import { hasSeenIntro } from './utils/onboarding';
+import { Home } from './pages/Home';
 
 const App = () => {
   const location = useLocation();
@@ -21,7 +22,8 @@ const App = () => {
   return (
     <AppShell>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/portfolio" element={<Dashboard />} />
         <Route path="/appartement/:id" element={<ApartmentDetail />} />
         <Route path="/comparateur" element={<Comparator />} />
         <Route path="/intro" element={<Intro />} />

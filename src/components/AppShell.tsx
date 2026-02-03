@@ -26,6 +26,9 @@ export const AppShell = ({ children }: AppShellProps) => {
           </Box>
           <Stack direction="row" spacing={1} alignItems="center">
             <Button component={RouterLink} to="/" color="primary" variant="text">
+              Accueil
+            </Button>
+            <Button component={RouterLink} to="/portfolio" color="primary" variant="text">
               Portfolio
             </Button>
             <Button component={RouterLink} to="/comparateur" color="primary" variant="text">

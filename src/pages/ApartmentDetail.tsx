@@ -49,7 +49,7 @@ export const ApartmentDetail = () => {
     return (
       <Stack spacing={2}>
         <Alert severity="warning">Appartement introuvable.</Alert>
-        <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/')}>Retour</Button>
+        <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/portfolio')}>Retour</Button>
       </Stack>
     );
   }
@@ -275,7 +275,7 @@ export const ApartmentDetail = () => {
             spacing={1}
             sx={{ width: { xs: '100%', sm: 'auto' }, alignItems: { xs: 'stretch', sm: 'center' } }}
           >
-            <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/')} fullWidth>
+            <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/portfolio')} fullWidth>
               Retour
             </Button>
             <Button startIcon={<ContentCopyIcon />} onClick={() => duplicateApartment(apartment.id)} fullWidth>
@@ -289,7 +289,7 @@ export const ApartmentDetail = () => {
               color="error"
               onClick={() => {
                 deleteApartment(apartment.id);
-                navigate('/');
+                navigate('/portfolio');
               }}
               fullWidth
             >
@@ -332,7 +332,7 @@ export const ApartmentDetail = () => {
                   onPrev={() => setActiveStep((s) => Math.max(0, s - 1))}
                   onNext={() => setActiveStep((s) => Math.min(steps.length - 1, s + 1))}
                   onSkip={!atEnd && activeStep >= 4 ? () => setActiveStep((s) => Math.min(steps.length - 1, s + 1)) : undefined}
-                  onReturn={atEnd ? () => navigate('/') : undefined}
+                  onReturn={atEnd ? () => navigate('/portfolio') : undefined}
                 />
               </Stack>
             </SectionCard>
