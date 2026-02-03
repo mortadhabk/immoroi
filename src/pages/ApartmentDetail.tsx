@@ -273,27 +273,44 @@ export const ApartmentDetail = () => {
         description="Renseignez les informations ci-dessous, étape par étape."
         actions={
           <Stack
-            direction={{ xs: 'column', sm: 'row' }}
+            direction="row"
             spacing={1}
-            sx={{ width: { xs: '100%', sm: 'auto' }, alignItems: { xs: 'stretch', sm: 'center' } }}
+            sx={{
+              width: '100%',
+              flexWrap: 'wrap',
+              justifyContent: 'flex-start',
+            }}
           >
-            <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/portfolio')} fullWidth>
+            <Button variant="contained" startIcon={<ArrowBackIcon />} onClick={() => navigate('/portfolio')} sx={{ whiteSpace: 'nowrap' }}>
               Retour
             </Button>
-            <Button startIcon={<ContentCopyIcon />} onClick={() => duplicateApartment(apartment.id)} fullWidth>
+            <Button
+              variant="contained"
+              color="info"
+              startIcon={<ContentCopyIcon />}
+              onClick={() => duplicateApartment(apartment.id)}
+              sx={{ whiteSpace: 'nowrap' }}
+            >
               Copier ce bien
             </Button>
-            <Button startIcon={<RestartAltIcon />} color="warning" onClick={() => resetApartment(apartment.id)} fullWidth>
+            <Button
+              variant="contained"
+              color="warning"
+              startIcon={<RestartAltIcon />}
+              onClick={() => resetApartment(apartment.id)}
+              sx={{ whiteSpace: 'nowrap' }}
+            >
               Remettre à zéro
             </Button>
             <Button
+              variant="contained"
               startIcon={<DeleteOutlineIcon />}
               color="error"
               onClick={() => {
                 deleteApartment(apartment.id);
                 navigate('/portfolio');
               }}
-              fullWidth
+              sx={{ whiteSpace: 'nowrap' }}
             >
               Supprimer
             </Button>
@@ -301,8 +318,14 @@ export const ApartmentDetail = () => {
         }
       />
 
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={8}>
+      <Box
+        sx={{
+          display: 'grid',
+          gap: 3,
+          gridTemplateColumns: { xs: '1fr', md: 'minmax(0, 2fr) minmax(0, 1fr)' },
+        }}
+      >
+        <Box>
           <Stack spacing={2}>
             <SectionCard
               title={`Étape ${activeStep + 1} / ${steps.length} — ${steps[activeStep].label}`}
@@ -339,9 +362,9 @@ export const ApartmentDetail = () => {
               </Stack>
             </SectionCard>
           </Stack>
-        </Grid>
+        </Box>
 
-        <Grid item xs={12} md={4}>
+        <Box>
           <Stack spacing={2} sx={{ position: { md: 'sticky' }, top: { md: 96 } }}>
             <ResultsPanel metrics={metrics} />
             <Card variant="outlined">
@@ -370,8 +393,8 @@ export const ApartmentDetail = () => {
               </CardContent>
             </Card>
           </Stack>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </Stack>
   );
 };

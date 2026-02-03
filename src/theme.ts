@@ -4,13 +4,13 @@ export const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#0b57d0',
+      main: '#1f4b99',
     },
     secondary: {
-      main: '#198754',
+      main: '#2f6f58',
     },
     info: {
-      main: '#7c4dff',
+      main: '#5b6aa5',
     },
     background: {
       default: '#f4f7ff',
@@ -28,12 +28,13 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 18,
-          borderColor: '#e3e8f6',
-          boxShadow: '0 12px 30px rgba(18, 38, 63, 0.08)',
-          transition: 'transform 180ms ease, box-shadow 180ms ease',
+          borderColor: '#dfe5ee',
+          boxShadow: '0 10px 22px rgba(18, 38, 63, 0.06)',
+          transition: 'transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease',
           '&:hover': {
             transform: 'translateY(-2px)',
-            boxShadow: '0 16px 36px rgba(18, 38, 63, 0.12)',
+            borderColor: '#cdd6e3',
+            boxShadow: '0 14px 30px rgba(18, 38, 63, 0.1)',
           },
         },
       },
@@ -43,9 +44,27 @@ export const theme = createTheme({
         root: {
           textTransform: 'none',
           fontWeight: 600,
-          transition: 'transform 180ms ease, box-shadow 180ms ease',
+          borderRadius: 12,
+          paddingInline: 18,
+          paddingBlock: 10,
+          transition: 'transform 180ms ease, box-shadow 180ms ease, background 180ms ease',
           '&:hover': {
             transform: 'translateY(-1px)',
+          },
+        },
+        contained: {
+          backgroundImage: 'linear-gradient(120deg, #1f4b99, #6a7aa6)',
+          boxShadow: '0 6px 16px rgba(31, 75, 153, 0.18)',
+          '&:hover': {
+            boxShadow: '0 10px 22px rgba(31, 75, 153, 0.28)',
+          },
+        },
+        outlined: {
+          borderColor: '#c7cfdd',
+          backgroundColor: '#ffffff',
+          '&:hover': {
+            borderColor: '#9aa6bb',
+            backgroundColor: '#f4f6f9',
           },
         },
       },
