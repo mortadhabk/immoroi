@@ -1,7 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Button, Menu, MenuItem, Stack, Typography } from '@mui/material';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
-import DownloadIcon from '@mui/icons-material/Download';
+import { useEffect, useMemo, useState } from 'react';
+import { Button, Grid, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import DeleteOutline from '@mui/icons-material/DeleteOutline';
 import { useNavigate } from 'react-router-dom';
 import { useNextStep } from 'nextstepjs';
@@ -13,17 +11,16 @@ import { PageHeader } from '../components/layout/PageHeader';
 import { SectionCard } from '../components/layout/SectionCard';
 import { EmptyState } from '../components/EmptyState';
 import { PortfolioHeader } from '../components/portfolio/PortfolioHeader';
-import { KPISection } from '../components/portfolio/KPISection';
 import { InsightsPanel } from '../components/portfolio/InsightsPanel';
 import { PropertyList } from '../components/portfolio/PropertyList';
 import { AnalyticsCharts } from '../components/portfolio/AnalyticsCharts';
 import { completionFor } from '../components/portfolio/utils';
 import type { ApartmentWithMetrics } from '../components/portfolio/types';
+import { KpiCard } from '../components/KpiCard';
 
 const MARKET_AVG = 3;
 
 export const Dashboard = () => {
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   const { startNextStep } = useNextStep();
   const {
@@ -31,7 +28,6 @@ export const Dashboard = () => {
     addApartment,
     deleteApartment,
     duplicateApartment,
-    importPortfolio,
   } = usePortfolioStore();
 
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
@@ -65,25 +61,6 @@ export const Dashboard = () => {
     }
     return undefined;
   }, [apartments.length, startNextStep]);
-
-  const exportJson = () => {
-    const data = JSON.stringify(apartments, null, 2);
-    const blob = new Blob([data], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'portfolio.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const importJson = async (file: File) => {
-    const text = await file.text();
-    const data = JSON.parse(text);
-    if (Array.isArray(data)) {
-      importPortfolio(data);
-    }
-  };
 
   const openMenu = (event: React.MouseEvent<HTMLElement>, id: string) => {
     setMenuAnchor(event.currentTarget);
@@ -215,33 +192,9 @@ export const Dashboard = () => {
       <PageHeader
         title="Statistiques globales"
         description="Vue synthétique de la performance de votre patrimoine."
-        actions={
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
-            <Button variant="outlined" startIcon={<DownloadIcon />} onClick={exportJson}>
-              Export JSON
-            </Button>
-            <Button
-              variant="outlined"
-              startIcon={<UploadFileIcon />}
-              onClick={() => inputRef.current?.click()}
-            >
-              Import JSON
-            </Button>
-            <input
-              ref={inputRef}
-              type="file"
-              accept="application/json"
-              hidden
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) void importJson(file);
-              }}
-            />
-          </Stack>
-        }
       />
 
- 
+
 
       <SectionCard title="Insights Portfolio" description="Messages clés pour passer à l’action.">
         <InsightsPanel

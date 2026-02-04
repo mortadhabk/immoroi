@@ -1,17 +1,48 @@
 import { Box, Button, Card, CardContent, Chip, Stack, Typography } from '@mui/material';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
-import BoltIcon from '@mui/icons-material/Bolt';
-import ShieldIcon from '@mui/icons-material/Shield';
-import InsightsIcon from '@mui/icons-material/Insights';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import PaidIcon from '@mui/icons-material/Paid';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+
+const buildJsonLd = (description: string) => ({
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'ImmoROI',
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'Web',
+  description,
+  url: 'https://example.com',
+});
 
 export const Home = () => {
   const navigate = useNavigate();
+  const title = 'ImmoROI - Simulateur de rentabilité immobilière';
+  const description =
+    'Calcule la rentabilité d’un investissement locatif : crédit bancaire, loyers, charges, cashflow et rendements %/an.';
 
   return (
-    <Stack spacing={8} sx={{ pb: { xs: 6, md: 10 } }}>
+    <Stack spacing={6} sx={{ pb: { xs: 6, md: 10 } }}>
+      <Helmet>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta name="robots" content="index,follow" />
+        <link rel="canonical" href="https://example.com/" />
+
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://example.com/" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+
+        <script type="application/ld+json">{JSON.stringify(buildJsonLd(description))}</script>
+      </Helmet>
+
       <Box
         component={motion.div}
         initial={{ opacity: 0, y: 24 }}
@@ -23,24 +54,36 @@ export const Home = () => {
           overflow: 'hidden',
           p: { xs: 3, md: 6 },
           background:
-            'radial-gradient(circle at 15% 20%, rgba(124,77,255,0.22), transparent 45%), radial-gradient(circle at 85% 10%, rgba(11,87,208,0.22), transparent 40%), #ffffff',
-          border: '1px solid rgba(124,77,255,0.2)',
+            'radial-gradient(circle at 15% 20%, rgba(106,122,166,0.2), transparent 45%), radial-gradient(circle at 85% 10%, rgba(31,75,153,0.18), transparent 40%), #ffffff',
+          border: '1px solid rgba(106,122,166,0.18)',
         }}
       >
-        <Stack spacing={3} sx={{ maxWidth: 640 }}>
-          <Chip label="Simulateur premium" color="primary" variant="outlined" sx={{ alignSelf: 'flex-start' }} />
-          <Typography variant="h2" fontWeight={800}>
-            Le ROI immobilier
-            <br />
-            enfin clair, rapide et fiable.
+        <Stack spacing={2.5} sx={{ maxWidth: 640 }}>
+          <Chip label="Simulation immobilière guidée" color="primary" variant="outlined" sx={{ alignSelf: 'flex-start' }} />
+          <Typography component="h1" variant="h2" fontWeight={800}>
+            Calcule la rentabilité
+            de ton investissement immobilier
           </Typography>
           <Typography color="text.secondary">
-            ImmoROI vous guide pas à pas pour calculer rendement net, cashflow et mensualités, sans jargon et sans
-            tableurs complexes.
+            Crédit bancaire, loyers, charges et cashflow : tout est calculé automatiquement.
           </Typography>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <PaidIcon color="primary" fontSize="small" />
+              <Typography>Cashflow mensuel + rendements %/an</Typography>
+            </Stack>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <AccountBalanceIcon color="primary" fontSize="small" />
+              <Typography>Crédit bancaire intégré</Typography>
+            </Stack>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <DirectionsWalkIcon color="primary" fontSize="small" />
+              <Typography>Guidé étape par étape</Typography>
+            </Stack>
+          </Stack>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
             <Button variant="contained" size="large" onClick={() => navigate('/portfolio')}>
-              Commencer maintenant
+              Simuler mon investissement
             </Button>
             <Button variant="outlined" size="large" onClick={() => navigate('/comparateur')}>
               Voir un exemple
@@ -51,7 +94,7 @@ export const Home = () => {
 
       <Stack spacing={3}>
         <Typography variant="h4" fontWeight={800}>
-          Les bénéfices essentiels
+          Ce que tu obtiens
         </Typography>
         <Box
           sx={{
@@ -63,18 +106,18 @@ export const Home = () => {
           {[
             {
               icon: <AutoGraphIcon color="primary" />,
-              title: 'Vision instantanée',
-              text: 'Rendement net annuel et cashflow visibles en un coup d’œil.',
+              title: 'Rendements lisibles',
+              text: 'Brut et net en %/an, clairs et comparables.',
             },
             {
-              icon: <BoltIcon color="primary" />,
-              title: 'Saisie ultra rapide',
-              text: 'Ajoutez un bien en quelques minutes, guidé étape par étape.',
+              icon: <AccountBalanceIcon color="primary" />,
+              title: 'Crédit bancaire intégré',
+              text: 'Mensualités et coût total du prêt.',
             },
             {
-              icon: <ShieldIcon color="primary" />,
-              title: 'Fiable et transparent',
-              text: 'Chaque formule est appliquée clairement, sans boîte noire.',
+              icon: <PaidIcon color="primary" />,
+              title: 'Cashflow réel',
+              text: 'Revenus - charges, par mois et par an.',
             },
           ].map((item) => (
             <Card key={item.title} variant="outlined" sx={{ height: '100%' }}>
@@ -106,18 +149,18 @@ export const Home = () => {
           {[
             {
               step: 'Étape 1',
-              title: 'Ajoutez votre bien',
-              text: 'Nom, localisation, prix d’achat et frais.',
+              title: 'Ajoute le bien',
+              text: 'Prix, surface, frais principaux.',
             },
             {
               step: 'Étape 2',
-              title: 'Renseignez revenus & charges',
-              text: 'Loyer mensuel et charges annuelles pour un calcul fiable.',
+              title: 'Renseigne le crédit',
+              text: 'Taux annuel, durée, apport.',
             },
             {
               step: 'Étape 3',
-              title: 'Analysez les résultats',
-              text: 'Rendement net annuel, cashflow et mensualités claires.',
+              title: 'Analyse instantanée',
+              text: 'Cashflow et rendements %/an.',
             },
           ].map((item) => (
             <Card key={item.title} variant="outlined" sx={{ height: '100%' }}>
@@ -135,61 +178,23 @@ export const Home = () => {
         </Box>
       </Stack>
 
-      <Stack spacing={3}>
-        <Typography variant="h4" fontWeight={800}>
-          Pourquoi ImmoROI inspire confiance
-        </Typography>
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' },
-            gap: 3,
-          }}
-        >
-          {[
-            {
-              icon: <InsightsIcon color="primary" />,
-              title: 'Des résultats lisibles',
-              text: 'Affichage clair en € et en %, sans ambiguïté.',
-            },
-            {
-              icon: <CheckCircleIcon color="primary" />,
-              title: 'Contrôle total',
-              text: 'Export JSON et gestion multi-biens pour vos analyses.',
-            },
-          ].map((item) => (
-            <Card key={item.title} variant="outlined" sx={{ height: '100%' }}>
-              <CardContent>
-                <Stack spacing={2}>
-                  {item.icon}
-                  <Typography variant="h6" fontWeight={700}>
-                    {item.title}
-                  </Typography>
-                  <Typography color="text.secondary">{item.text}</Typography>
-                </Stack>
-              </CardContent>
-            </Card>
-          ))}
-        </Box>
-      </Stack>
-
       <Card
         variant="outlined"
         sx={{
           p: { xs: 3, md: 5 },
           textAlign: 'center',
-          background: 'linear-gradient(135deg, rgba(11,87,208,0.12), rgba(124,77,255,0.12))',
+          background: 'linear-gradient(135deg, rgba(31,75,153,0.12), rgba(106,122,166,0.12))',
         }}
       >
-        <Stack spacing={2} alignItems="center">
+        <Stack spacing={1.5} alignItems="center">
           <Typography variant="h4" fontWeight={800}>
-            Prêt à simuler votre prochain investissement ?
+            Prêt à simuler ton investissement ?
           </Typography>
           <Typography color="text.secondary" sx={{ maxWidth: 520 }}>
-            Lancez un calcul en quelques minutes et comparez la performance de vos biens.
+            Quelques chiffres suffisent pour voir le résultat.
           </Typography>
           <Button variant="contained" size="large" onClick={() => navigate('/portfolio')}>
-            Démarrer un calcul
+            Simuler mon investissement
           </Button>
         </Stack>
       </Card>

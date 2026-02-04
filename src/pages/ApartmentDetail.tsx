@@ -13,6 +13,8 @@ import {
   Typography,
   Card,
   CardContent,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -34,6 +36,8 @@ import { InlineHelp } from '../components/InlineHelp';
 import { WizardNav } from '../components/wizard/WizardNav';
 
 export const ApartmentDetail = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { id } = useParams();
   const navigate = useNavigate();
   const { apartments, setApartment, deleteApartment, duplicateApartment, resetApartment } = usePortfolioStore();
@@ -333,13 +337,15 @@ export const ApartmentDetail = () => {
             >
               <Stack spacing={3}>
                 <LinearProgress variant="determinate" value={progress} />
-                <Stepper activeStep={activeStep} alternativeLabel>
-                  {steps.map((step) => (
-                    <Step key={step.label}>
-                      <StepLabel>{step.label}</StepLabel>
-                    </Step>
-                  ))}
-                </Stepper>
+                {!isMobile && (
+                  <Stepper activeStep={activeStep} alternativeLabel>
+                    {steps.map((step) => (
+                      <Step key={step.label}>
+                        <StepLabel>{step.label}</StepLabel>
+                      </Step>
+                    ))}
+                  </Stepper>
+                )}
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeStep}

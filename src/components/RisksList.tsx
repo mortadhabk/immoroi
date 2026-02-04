@@ -40,7 +40,7 @@ export const RisksList = ({
             />
           </Grid>
           <Grid item xs={12} md={2}>
-            <IconButton color="error" onClick={() => remove(r.id)}>
+            <IconButton color="error" onClick={() => remove(r.id)} aria-label="Supprimer le risque">
               <DeleteOutline />
             </IconButton>
           </Grid>

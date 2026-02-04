@@ -49,7 +49,7 @@ export const RevenuesTable = ({
             />
           </Grid>
           <Grid item xs={12} md={2}>
-            <IconButton color="error" onClick={() => remove(r.id)}>
+            <IconButton color="error" onClick={() => remove(r.id)} aria-label="Supprimer le revenu">
               <DeleteOutline />
             </IconButton>
           </Grid>

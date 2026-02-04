@@ -56,7 +56,7 @@ export const ChargesTable = ({
             />
           </Grid>
           <Grid item xs={12} md={1}>
-            <IconButton color="error" onClick={() => remove(c.id)}>
+            <IconButton color="error" onClick={() => remove(c.id)} aria-label="Supprimer la charge">
               <DeleteOutline />
             </IconButton>
           </Grid>
