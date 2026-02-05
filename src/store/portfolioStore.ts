@@ -44,7 +44,7 @@ const emptyApartment = (): Apartment => {
 
 const withSeed = (): Apartment[] => {
   const now = new Date().toISOString();
-  const baseCharges = (id: string): Charge[] => [
+  const baseCharges = (): Charge[] => [
     { id: uid(), type: 'Taxe Foncière', amount: 1100, description: 'Impôt annuel' },
     { id: uid(), type: 'Charges Copro', amount: 1200, description: 'Entretien copro' },
     { id: uid(), type: 'Entretien', amount: 600, description: 'Réparations annuelles' },
@@ -72,7 +72,7 @@ const withSeed = (): Apartment[] => {
       annualInterestRate: null,
       bankInsuranceTotal: 5000,
       worksCost: 6000,
-      charges: baseCharges('1'),
+      charges: baseCharges(),
       revenues: baseRevenues(1000),
       createdAt: now,
       updatedAt: now,
@@ -96,7 +96,7 @@ const withSeed = (): Apartment[] => {
       annualInterestRate: 0.035,
       bankInsuranceTotal: 6500,
       worksCost: 8000,
-      charges: baseCharges('2'),
+      charges: baseCharges(),
       revenues: baseRevenues(1100),
       createdAt: now,
       updatedAt: now,

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Menu, MenuItem, Stack, Typography, Card, CardContent } from '@mui/material';
+import { Button, Menu, MenuItem, Stack } from '@mui/material';
 import DeleteOutline from '@mui/icons-material/DeleteOutline';
 import { useNavigate } from 'react-router-dom';
 import { useNextStep } from 'nextstepjs';
@@ -121,17 +121,6 @@ export const Dashboard = () => {
     };
   }, [kpis]);
 
-
-  const nextAction = useMemo(() => {
-    const firstIncomplete = items.find((item) => item.completion.missing.length > 0);
-    if (!firstIncomplete) {
-      return apartments.length === 0
-        ? 'Ajoutez votre premier bien pour démarrer.'
-        : 'Tout est prêt. Analysez vos performances.';
-    }
-    const missingCount = firstIncomplete.completion.missing.length;
-    return `Il vous manque ${missingCount} informations pour calculer vos rendements.`;
-  }, [items, apartments.length]);
 
   const visibleItems = filteredItems.slice(0, 7);
   const cashflowData = visibleItems.map((item) => ({
