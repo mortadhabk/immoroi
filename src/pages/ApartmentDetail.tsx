@@ -296,15 +296,21 @@ export const ApartmentDetail = () => {
         description="Renseignez les informations ci-dessous, étape par étape."
         actions={
           <Stack
-            direction="row"
-            spacing={1}
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={{ xs: 1, sm: 1.5 }}
             sx={{
               width: '100%',
               flexWrap: 'wrap',
               justifyContent: 'flex-start',
             }}
           >
-            <Button variant="contained" startIcon={<ArrowBackIcon />} onClick={() => navigate('/portfolio')} sx={{ whiteSpace: 'nowrap' }}>
+            <Button
+              variant="contained"
+              size="small"
+              startIcon={<ArrowBackIcon />}
+              onClick={() => navigate('/portfolio')}
+              sx={{ whiteSpace: 'nowrap', width: { xs: '100%', sm: 'auto' } }}
+            >
               Retour
             </Button>
             <Button
@@ -312,7 +318,8 @@ export const ApartmentDetail = () => {
               color="info"
               startIcon={<ContentCopyIcon />}
               onClick={() => duplicateApartment(apartment.id)}
-              sx={{ whiteSpace: 'nowrap' }}
+              size="small"
+              sx={{ whiteSpace: 'nowrap', width: { xs: '100%', sm: 'auto' } }}
             >
               Copier ce bien
             </Button>
@@ -321,7 +328,8 @@ export const ApartmentDetail = () => {
               color="warning"
               startIcon={<RestartAltIcon />}
               onClick={() => resetApartment(apartment.id)}
-              sx={{ whiteSpace: 'nowrap' }}
+              size="small"
+              sx={{ whiteSpace: 'nowrap', width: { xs: '100%', sm: 'auto' } }}
             >
               Remettre à zéro
             </Button>
@@ -333,7 +341,8 @@ export const ApartmentDetail = () => {
                 deleteApartment(apartment.id);
                 navigate('/portfolio');
               }}
-              sx={{ whiteSpace: 'nowrap' }}
+              size="small"
+              sx={{ whiteSpace: 'nowrap', width: { xs: '100%', sm: 'auto' } }}
             >
               Supprimer
             </Button>

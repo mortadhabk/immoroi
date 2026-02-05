@@ -48,8 +48,14 @@ export const AppShell = ({ children }: AppShellProps) => {
           </Stack>
         </Toolbar>
       </AppBar>
-      <Container maxWidth="lg" sx={{ py: { xs: 3, md: 5 }, px: { xs: 1, sm: 3, md: 4 } }}>
-        {children}
+      <Container
+        maxWidth={false}
+        sx={{
+          py: { xs: 3, md: 5 },
+          px: { xs: 2, sm: 3, md: 4, lg: 5 },
+        }}
+      >
+        <Box sx={{ maxWidth: 1320, mx: 'auto', width: '100%' }}>{children}</Box>
       </Container>
       <CoffeeDonationFloatingButton />
     </>

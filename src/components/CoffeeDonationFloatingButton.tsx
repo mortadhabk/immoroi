@@ -32,8 +32,8 @@ export const CoffeeDonationFloatingButton = () => {
     <Box
       sx={{
         position: 'fixed',
-        right: 16,
-        bottom: 16,
+        right: { xs: 16, md: 32, lg: 40 },
+        bottom: { xs: 16, md: 24 },
         zIndex: 1300,
         display: 'flex',
         alignItems: 'center',
