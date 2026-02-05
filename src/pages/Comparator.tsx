@@ -9,22 +9,13 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  FormControl,
   Grid,
-  InputLabel,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
   Stack,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  TextField,
-  ToggleButton,
-  ToggleButtonGroup,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -32,36 +23,29 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { useNavigate } from 'react-router-dom';
 import { usePortfolioStore } from '../store/portfolioStore';
 import { formatCurrency, formatNumber } from '../utils/format/currency';
-import { PageHeader } from '../components/layout/PageHeader';
 import { SectionCard } from '../components/layout/SectionCard';
 import { buildComparatorRows, applyComparatorFilters, computeScore } from './comparatorUtils';
 
 export const Comparator = () => {
   const { apartments } = usePortfolioStore();
   const navigate = useNavigate();
-  const [objective, setObjective] = useState<'cashflow' | 'yield' | 'credit'>('cashflow');
-  const [sortKey, setSortKey] = useState<'score' | 'netYield' | 'cashflow' | 'credit'>('score');
-  const [sortAsc, setSortAsc] = useState(false);
+  const sortKey: 'score' | 'netYield' | 'cashflow' | 'credit' = 'score';
+  const sortAsc = false;
   const [showCompleteOnly, setShowCompleteOnly] = useState(true);
-  const [status, setStatus] = useState<'all' | 'complete' | 'incomplete'>('all');
-  const [city, setCity] = useState('');
-  const [cashflowFilter, setCashflowFilter] = useState<'all' | 'positive' | 'negative'>('all');
-  const [minNetYield, setMinNetYield] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
   const [compareOpen, setCompareOpen] = useState(false);
 
   const rows = useMemo(() => buildComparatorRows(apartments), [apartments]);
-  const cities = useMemo(() => Array.from(new Set(rows.map((r) => r.city))).sort(), [rows]);
 
   const filtered = useMemo(() => {
     return applyComparatorFilters(rows, {
       showCompleteOnly,
-      status,
-      city,
-      cashflow: cashflowFilter,
-      minNetYield,
+      status: 'all',
+      city: '',
+      cashflow: 'all',
+      minNetYield: 0,
     });
-  }, [rows, showCompleteOnly, status, city, cashflowFilter, minNetYield]);
+  }, [rows, showCompleteOnly]);
 
   const sorted = useMemo(() => {
     const data = [...filtered];
@@ -88,17 +72,6 @@ export const Comparator = () => {
     });
     return data;
   }, [filtered, sortKey, sortAsc]);
-
-  const updateObjective = (value: 'cashflow' | 'yield' | 'credit') => {
-    setObjective(value);
-    if (value === 'credit') {
-      setSortKey('credit');
-      setSortAsc(true);
-    } else {
-      setSortKey(value === 'yield' ? 'netYield' : 'cashflow');
-      setSortAsc(false);
-    }
-  };
 
   const handleSelect = (id: string) => {
     setSelected((prev) => {

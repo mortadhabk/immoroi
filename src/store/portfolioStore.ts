@@ -42,72 +42,11 @@ const emptyApartment = (): Apartment => {
   };
 };
 
-const withSeed = (): Apartment[] => {
-  const now = new Date().toISOString();
-  const baseCharges = (): Charge[] => [
-    { id: uid(), type: 'Taxe Foncière', amount: 1100, description: 'Impôt annuel' },
-    { id: uid(), type: 'Charges Copro', amount: 1200, description: 'Entretien copro' },
-    { id: uid(), type: 'Entretien', amount: 600, description: 'Réparations annuelles' },
-  ];
-  const baseRevenues = (monthly: number): Revenue[] => [
-    { id: uid(), type: 'Loyer', monthlyAmount: monthly },
-  ];
-  return [
-    {
-      id: uid(),
-      name: 'T2 Mermoz',
-      address: 'Mermoz',
-      city: 'Toulouse',
-      postalCode: '31100',
-      surfaceM2: 46,
-      rooms: 2,
-      purchasePrice: 90000,
-      notaryFees: 7200,
-      agencyFees: 0,
-      bankFileFees: 800,
-      brokerFees: 0,
-      guaranteeFees: 0,
-      downPayment: 20000,
-      loanYears: 20,
-      annualInterestRate: null,
-      bankInsuranceTotal: 5000,
-      worksCost: 6000,
-      charges: baseCharges(),
-      revenues: baseRevenues(1000),
-      createdAt: now,
-      updatedAt: now,
-    },
-    {
-      id: uid(),
-      name: 'T3 Bonnefoy',
-      address: 'Rue de Naples',
-      city: 'Toulouse',
-      postalCode: '31500',
-      surfaceM2: 54,
-      rooms: 3,
-      purchasePrice: 113000,
-      notaryFees: 10000,
-      agencyFees: 0,
-      bankFileFees: 800,
-      brokerFees: 0,
-      guaranteeFees: 0,
-      downPayment: 25000,
-      loanYears: 22,
-      annualInterestRate: 0.035,
-      bankInsuranceTotal: 6500,
-      worksCost: 8000,
-      charges: baseCharges(),
-      revenues: baseRevenues(1100),
-      createdAt: now,
-      updatedAt: now,
-    },
-  ];
-};
 
 export const usePortfolioStore = create<PortfolioState>()(
   persist(
     (set, get) => ({
-      apartments: withSeed(),
+      apartments: [],
       addApartment: () => {
         const apt = emptyApartment();
         set((state) => ({ apartments: [apt, ...state.apartments] }));
