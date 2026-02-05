@@ -12,6 +12,7 @@ export type PropertyCardProps = {
   statusColor: 'success' | 'warning';
   netYield: string;
   cashflow: string;
+  cashflowPositive?: boolean;
   primaryLabel: string;
   onPrimary: () => void;
   onDuplicate: () => void;
@@ -28,6 +29,7 @@ export const PropertyCard = ({
   statusColor,
   netYield,
   cashflow,
+  cashflowPositive,
   primaryLabel,
   onPrimary,
   onDuplicate,
@@ -49,6 +51,7 @@ export const PropertyCard = ({
             </Box>
             <Stack direction="row" spacing={1} alignItems="center">
               <Chip label={statusLabel} color={statusColor} variant="outlined" />
+              {cashflowPositive && <Chip label="Cashflow +" color="success" variant="outlined" />}
               <IconButton aria-label="Actions" onClick={onMenu}>
                 <MoreVertIcon />
               </IconButton>
@@ -67,18 +70,20 @@ export const PropertyCard = ({
             )}
           </Stack>
 
-          <Stack direction="row" justifyContent="space-between">
-            <Box>
-              <Typography variant="caption" color="text.secondary">
-                Rendement net annuel
-              </Typography>
-              <Typography fontWeight={700}>{netYield}</Typography>
-            </Box>
+          <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Box>
               <Typography variant="caption" color="text.secondary">
                 Cashflow mensuel
               </Typography>
-              <Typography fontWeight={700}>{cashflow}</Typography>
+              <Typography variant="h6" fontWeight={800}>
+                {cashflow}
+              </Typography>
+            </Box>
+            <Box textAlign="right">
+              <Typography variant="caption" color="text.secondary">
+                Rendement net
+              </Typography>
+              <Typography fontWeight={700}>{netYield}</Typography>
             </Box>
           </Stack>
 

@@ -16,9 +16,10 @@ export const PortfolioHeader = ({ nextAction, stepsStatus, onAdd }: PortfolioHea
       sx={{
         p: { xs: 3, md: 4 },
         borderRadius: 4,
-        border: '1px solid rgba(124,77,255,0.18)',
+        border: '1px solid rgba(15,23,42,0.08)',
         background:
-          'radial-gradient(circle at 12% 15%, rgba(124,77,255,0.18), transparent 45%), radial-gradient(circle at 85% 10%, rgba(11,87,208,0.18), transparent 40%), #ffffff',
+          'radial-gradient(circle at 10% 15%, rgba(26,79,216,0.12), transparent 45%), radial-gradient(circle at 90% 5%, rgba(28,124,84,0.12), transparent 40%), #ffffff',
+        boxShadow: '0 12px 32px rgba(15,23,42,0.08)',
       }}
     >
       <Grid container spacing={3} alignItems="center">
@@ -54,12 +55,27 @@ export const PortfolioHeader = ({ nextAction, stepsStatus, onAdd }: PortfolioHea
           </Stack>
         </Grid>
         <Grid item xs={12} md={4}>
-          <Stack spacing={1.5}>
+          <Stack spacing={1.5} sx={{ alignItems: { xs: 'flex-start', md: 'flex-end' } }}>
             <Typography variant="subtitle2" color="text.secondary">
               Prochaine action
             </Typography>
-            <Typography fontWeight={700}>{nextAction}</Typography>
-            <Button variant="contained" startIcon={<AddIcon />} onClick={onAdd}>
+            <Typography fontWeight={700} sx={{ textAlign: { xs: 'left', md: 'right' } }}>
+              {nextAction}
+            </Typography>
+            <Button
+              variant="contained"
+              size="large"
+              startIcon={<AddIcon />}
+              onClick={onAdd}
+              sx={{
+                textTransform: 'none',
+                fontWeight: 800,
+                px: 3,
+                py: 1.2,
+                borderRadius: 2.5,
+                boxShadow: '0 10px 24px rgba(26,79,216,0.25)',
+              }}
+            >
               Ajouter un bien
             </Button>
           </Stack>

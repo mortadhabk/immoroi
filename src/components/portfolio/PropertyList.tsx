@@ -173,6 +173,7 @@ export const PropertyList = ({
                 statusColor={isComplete ? 'success' : 'warning'}
                 netYield={formatPercent(item.metrics.netYieldPercent)}
                 cashflow={formatCurrency(item.metrics.cashFlowMonth)}
+                cashflowPositive={item.metrics.cashFlowMonth >= 0}
                 primaryLabel={isComplete ? 'Voir l’analyse' : 'Continuer la saisie'}
                 onPrimary={() => onPrimary(item.apartment.id)}
                 onDuplicate={() => onDuplicate(item.apartment.id)}

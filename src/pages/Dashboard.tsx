@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Grid, Menu, MenuItem, Stack, Typography } from '@mui/material';
+import { Button, Menu, MenuItem, Stack, Typography, Card, CardContent } from '@mui/material';
 import DeleteOutline from '@mui/icons-material/DeleteOutline';
 import { useNavigate } from 'react-router-dom';
 import { useNextStep } from 'nextstepjs';
@@ -10,15 +10,11 @@ import { hasSeenTour, markTourSeen } from '../utils/onboarding';
 import { PageHeader } from '../components/layout/PageHeader';
 import { SectionCard } from '../components/layout/SectionCard';
 import { EmptyState } from '../components/EmptyState';
-import { PortfolioHeader } from '../components/portfolio/PortfolioHeader';
-import { InsightsPanel } from '../components/portfolio/InsightsPanel';
 import { PropertyList } from '../components/portfolio/PropertyList';
 import { AnalyticsCharts } from '../components/portfolio/AnalyticsCharts';
 import { completionFor } from '../components/portfolio/utils';
 import type { ApartmentWithMetrics } from '../components/portfolio/types';
 import { KpiCard } from '../components/KpiCard';
-
-const MARKET_AVG = 3;
 
 export const Dashboard = () => {
   const navigate = useNavigate();
@@ -125,34 +121,6 @@ export const Dashboard = () => {
     };
   }, [kpis]);
 
-  const insights = useMemo(() => {
-    if (items.length === 0) {
-      return {
-        negativeCount: 0,
-        bestLabel: 'Aucun bien',
-        bestValue: '0 €',
-        marketComparison: 'Ajoutez un bien pour obtenir une comparaison.',
-        optimizationTip: 'Commencez par renseigner les revenus et charges.',
-      };
-    }
-    const negativeCount = items.filter((item) => item.metrics.cashFlowMonth < 0).length;
-    const best = [...items].sort((a, b) => b.metrics.cashFlowMonth - a.metrics.cashFlowMonth)[0];
-    const marketComparison =
-      stats.netYield >= MARKET_AVG
-        ? `Votre rendement net moyen est supérieur à la moyenne du marché (${MARKET_AVG} %).`
-        : `Votre rendement net moyen est inférieur à la moyenne du marché (${MARKET_AVG} %).`;
-    const highestCharges = [...items].sort((a, b) => b.metrics.totalCharges - a.metrics.totalCharges)[0];
-    const optimizationTip = highestCharges
-      ? `Opportunité : réduire les charges sur ${highestCharges.apartment.name || 'un bien'} pour améliorer le net.`
-      : 'Opportunité : optimisez les charges pour améliorer le rendement.';
-    return {
-      negativeCount,
-      bestLabel: best.apartment.name || 'Votre meilleur bien',
-      bestValue: formatCurrency(best.metrics.cashFlowMonth),
-      marketComparison,
-      optimizationTip,
-    };
-  }, [items, stats.netYield]);
 
   const nextAction = useMemo(() => {
     const firstIncomplete = items.find((item) => item.completion.missing.length > 0);
@@ -165,48 +133,69 @@ export const Dashboard = () => {
     return `Il vous manque ${missingCount} informations pour calculer vos rendements.`;
   }, [items, apartments.length]);
 
-  const stepsStatus = [apartments.length > 0, items.some((item) => item.completion.missing.length === 0), items.length > 1];
-
-  const cashflowData = items.map((item) => ({
+  const visibleItems = filteredItems.slice(0, 7);
+  const cashflowData = visibleItems.map((item) => ({
     name: item.apartment.name || 'Bien',
     value: item.metrics.cashFlowMonth,
   }));
-  const yieldData = items.map((item) => ({
+  const yieldData = visibleItems.map((item) => ({
     name: item.apartment.name || 'Bien',
     value: item.metrics.netYieldPercent,
   }));
-  const breakdownData = [
-    { name: 'Revenus', value: kpis.totalRevenues },
-    { name: 'Charges', value: kpis.totalCharges },
-  ];
 
   const formatPercent = (value: number) => `${formatNumber(value)} %`;
 
   return (
     <Stack spacing={4}>
-      <PortfolioHeader nextAction={nextAction} stepsStatus={stepsStatus} onAdd={() => {
-        const id = addApartment();
-        navigate(`/appartement/${id}`);
-      }} />
-
       <PageHeader
-        title="Statistiques globales"
-        description="Vue synthétique de la performance de votre patrimoine."
+        title="Votre portfolio immobilier"
+        description="Vue globale de votre rentabilité et cashflow."
+        actions={
+          <Button
+            variant="contained"
+            onClick={() => {
+              const id = addApartment();
+              navigate(`/appartement/${id}`);
+            }}
+          >
+            Ajouter un bien
+          </Button>
+        }
       />
 
-
-
-      <SectionCard title="Insights Portfolio" description="Messages clés pour passer à l’action.">
-        <InsightsPanel
-          negativeCashflowCount={insights.negativeCount}
-          bestPropertyLabel={insights.bestLabel}
-          bestPropertyValue={insights.bestValue}
-          marketComparison={insights.marketComparison}
-          optimizationTip={insights.optimizationTip}
-        />
+      <SectionCard title="KPI globaux" description="Indicateurs clés au-dessus de la ligne de flottaison.">
+        <Stack
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))', md: 'repeat(4, minmax(0, 1fr))' },
+            gap: 2,
+          }}
+        >
+          <KpiCard
+            title="Cashflow mensuel total"
+            value={formatCurrency(stats.cashflowMonthly)}
+            subtitle="Après charges"
+          />
+          <KpiCard
+            title="Rendement net moyen"
+            value={formatPercent(stats.netYield)}
+            subtitle="Moyenne portefeuille"
+          />
+          <KpiCard
+            title="Nombre de biens"
+            value={String(apartments.length)}
+            subtitle="Biens actifs"
+          />
+          <KpiCard
+            title="% de biens complets"
+            value={`${items.length === 0 ? 0 : Math.round((items.filter((i) => i.completion.filled === i.completion.total).length / items.length) * 100)} %`}
+            subtitle="Données complètes"
+          />
+        </Stack>
       </SectionCard>
 
-      <SectionCard title="Vos biens" description="Gestion simple et rapide de votre patrimoine.">
+
+      <SectionCard title="Vos biens" description="Focus sur les biens à fort impact.">
         {apartments.length === 0 ? (
           <EmptyState
             title="Votre portfolio est vide"
@@ -225,7 +214,7 @@ export const Dashboard = () => {
           />
         ) : (
           <PropertyList
-            items={filteredItems}
+            items={visibleItems}
             search={search}
             onSearch={setSearch}
             statusFilter={statusFilter}
@@ -258,8 +247,8 @@ export const Dashboard = () => {
         )}
       </SectionCard>
 
-      <SectionCard title="Analyse visuelle" description="Comparez vos biens en un coup d’œil.">
-        {items.length === 0 ? (
+      <SectionCard title="Comparaison des cashflows mensuels" description="Analyse des biens affichés.">
+        {visibleItems.length === 0 ? (
           <EmptyState
             title="Aucune donnée à afficher"
             description="Ajoutez un bien pour générer les graphiques."
@@ -268,7 +257,6 @@ export const Dashboard = () => {
           <AnalyticsCharts
             cashflowData={cashflowData}
             yieldData={yieldData}
-            breakdownData={breakdownData}
             formatCurrency={formatCurrency}
             formatPercent={(value) => formatPercent(value)}
           />

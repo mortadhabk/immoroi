@@ -1,20 +1,16 @@
 import { Box, Stack, Typography } from '@mui/material';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 export type AnalyticsChartsProps = {
   cashflowData: Array<{ name: string; value: number }>;
   yieldData: Array<{ name: string; value: number }>;
-  breakdownData: Array<{ name: string; value: number }>;
   formatCurrency: (value: number) => string;
   formatPercent: (value: number) => string;
 };
 
-const COLORS = ['#0b57d0', '#7c4dff', '#198754'];
-
 export const AnalyticsCharts = ({
   cashflowData,
   yieldData,
-  breakdownData,
   formatCurrency,
   formatPercent,
 }: AnalyticsChartsProps) => {
