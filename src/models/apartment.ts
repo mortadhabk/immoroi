@@ -11,11 +11,6 @@ export type Revenue = {
   monthlyAmount: number;
 };
 
-export type Risk = {
-  id: string;
-  label: string;
-};
-
 export type Apartment = {
   id: string;
   name: string;
@@ -37,7 +32,6 @@ export type Apartment = {
   worksCost: number;
   charges: Charge[];
   revenues: Revenue[];
-  risks: Risk[];
   createdAt: string;
   updatedAt: string;
 };

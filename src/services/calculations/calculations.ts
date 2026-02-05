@@ -19,6 +19,36 @@ export type ApartmentMetrics = {
   gainBrutMensuel: number;
 };
 
+export type ScenarioOptions = {
+  vacancyRate?: number;
+  rentMultiplier?: number;
+  chargesMultiplier?: number;
+  rateDelta?: number;
+};
+
+export type InvestmentMetrics = ApartmentMetrics & {
+  monthlyRentGross: number;
+  monthlyRentEffective: number;
+  annualRevenuesEffective: number;
+  annualDebtService: number;
+  cashFlowYearAfterDebt: number;
+  cashFlowMonthAfterDebt: number;
+  noi: number;
+  dscr: number;
+  costTotalCredit: number;
+  totalAcquisitionCost: number;
+  breakEvenRentMonthly: number;
+  yieldOnEquityPercent: number;
+  paybackYears: number | null;
+  vacancyRate: number;
+};
+
+export type MissingField = {
+  key: string;
+  label: string;
+  stepIndex: number;
+};
+
 const round2 = (v: number) => Math.round((v + Number.EPSILON) * 100) / 100;
 
 export const resolveDefaultRate = (loanYears: number): number => {
@@ -48,7 +78,8 @@ export const calculateApartmentMetrics = (apartment: Apartment): ApartmentMetric
   const monthlyPayment = pmt(loanAmount, annualRate, apartment.loanYears);
   const n = apartment.loanYears * 12;
   const totalInterest = n > 0 ? monthlyPayment * n - loanAmount : 0;
-  const bankProfit = totalInterest + apartment.bankInsuranceTotal + apartment.bankFileFees + apartment.guaranteeFees;
+  const bankProfit =
+    totalInterest + apartment.bankInsuranceTotal + apartment.bankFileFees + apartment.guaranteeFees;
   const totalCostWithLoan =
     apartment.downPayment + loanAmount + totalInterest + apartment.bankInsuranceTotal;
   const totalPlusWorks = acquisitionViaBank + apartment.worksCost;
@@ -80,6 +111,90 @@ export const calculateApartmentMetrics = (apartment: Apartment): ApartmentMetric
     gainBrutMensuel: round2(gainBrutMensuel),
   };
 };
+
+export const computeInvestmentMetrics = (
+  apartment: Apartment,
+  options: ScenarioOptions = {}
+): InvestmentMetrics => {
+  const base = calculateApartmentMetrics(apartment);
+  const vacancyRate = options.vacancyRate ?? 0;
+  const rentMultiplier = options.rentMultiplier ?? 1;
+  const chargesMultiplier = options.chargesMultiplier ?? 1;
+  const rateDelta = options.rateDelta ?? 0;
+
+  const monthlyRentGross = apartment.revenues.reduce((sum, r) => sum + r.monthlyAmount, 0);
+  const monthlyRentEffective = monthlyRentGross * (1 - vacancyRate) * rentMultiplier;
+  const annualRevenuesEffective = monthlyRentEffective * 12;
+  const annualCharges = base.totalCharges * chargesMultiplier;
+
+  const adjustedAnnualRate =
+    apartment.annualInterestRate == null ? resolveDefaultRate(apartment.loanYears) : apartment.annualInterestRate;
+  const scenarioAnnualRate = adjustedAnnualRate + rateDelta;
+  const monthlyPayment = pmt(base.loanAmount, scenarioAnnualRate, apartment.loanYears);
+  const annualDebtService = monthlyPayment * 12;
+
+  const cashFlowYearAfterDebt = annualRevenuesEffective - annualCharges - annualDebtService;
+  const cashFlowMonthAfterDebt = cashFlowYearAfterDebt / 12;
+  const noi = annualRevenuesEffective - annualCharges;
+  const dscr = annualDebtService > 0 ? noi / annualDebtService : 0;
+
+  const costTotalCredit = base.totalInterest + apartment.bankInsuranceTotal;
+  const totalAcquisitionCost = base.acquisitionViaBank + apartment.worksCost;
+  const breakEvenRentMonthly =
+    (annualCharges + annualDebtService) / 12 / Math.max(0.0001, 1 - vacancyRate);
+
+  const yieldOnEquityPercent =
+    apartment.downPayment > 0 ? (cashFlowYearAfterDebt / apartment.downPayment) * 100 : 0;
+  const paybackYears =
+    cashFlowYearAfterDebt > 0 && apartment.downPayment > 0
+      ? apartment.downPayment / cashFlowYearAfterDebt
+      : null;
+
+  return {
+    ...base,
+    annualRate: scenarioAnnualRate,
+    monthlyPayment: round2(monthlyPayment),
+    monthlyRentGross: round2(monthlyRentGross),
+    monthlyRentEffective: round2(monthlyRentEffective),
+    annualRevenuesEffective: round2(annualRevenuesEffective),
+    annualDebtService: round2(annualDebtService),
+    cashFlowYearAfterDebt: round2(cashFlowYearAfterDebt),
+    cashFlowMonthAfterDebt: round2(cashFlowMonthAfterDebt),
+    noi: round2(noi),
+    dscr: round2(dscr),
+    costTotalCredit: round2(costTotalCredit),
+    totalAcquisitionCost: round2(totalAcquisitionCost),
+    breakEvenRentMonthly: round2(breakEvenRentMonthly),
+    yieldOnEquityPercent: round2(yieldOnEquityPercent),
+    paybackYears: paybackYears == null ? null : round2(paybackYears),
+    vacancyRate,
+  };
+};
+
+export const getMissingEssentials = (apartment: Apartment): MissingField[] => {
+  const missing: MissingField[] = [];
+  if (apartment.purchasePrice <= 0) {
+    missing.push({ key: 'purchasePrice', label: "Prix d'achat", stepIndex: 1 });
+  }
+  if (apartment.loanYears <= 0) {
+    missing.push({ key: 'loanYears', label: 'Durée du prêt', stepIndex: 3 });
+  }
+  if (apartment.annualInterestRate == null) {
+    missing.push({ key: 'annualInterestRate', label: 'Taux annuel', stepIndex: 3 });
+  }
+  if (apartment.downPayment < 0) {
+    missing.push({ key: 'downPayment', label: 'Apport', stepIndex: 3 });
+  }
+  if (!apartment.revenues.some((r) => r.monthlyAmount > 0)) {
+    missing.push({ key: 'revenues', label: 'Loyer mensuel', stepIndex: 6 });
+  }
+  if (!apartment.charges.some((c) => c.amount > 0)) {
+    missing.push({ key: 'charges', label: 'Charges annuelles', stepIndex: 5 });
+  }
+  return missing;
+};
+
+export const isEssentialsCompleted = (apartment: Apartment) => getMissingEssentials(apartment).length === 0;
 
 export const calculatePortfolioKpis = (apartments: Apartment[]) => {
   const totals = apartments.map(calculateApartmentMetrics);

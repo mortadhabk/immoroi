@@ -10,6 +10,7 @@ type NumberFieldProps = {
   allowNegative?: boolean;
   step?: number;
   id?: string;
+  error?: boolean;
 };
 
 export const NumberField = ({
@@ -20,6 +21,7 @@ export const NumberField = ({
   allowNegative = false,
   step = 0.01,
   id,
+  error = false,
 }: NumberFieldProps) => {
   const decimals = useMemo(() => {
     if (!Number.isFinite(step)) return 2;
@@ -81,6 +83,7 @@ export const NumberField = ({
         setDisplay(formatter.format(rounded));
       }}
       helperText={helperText}
+      error={error}
       inputProps={{ inputMode: 'decimal', pattern: '[0-9]*[.,]?[0-9]*', step }}
     />
   );

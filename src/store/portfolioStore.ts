@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Apartment, Charge, Revenue, Risk } from '../models/apartment';
+import type { Apartment, Charge, Revenue } from '../models/apartment';
 import { uid } from '../utils/id';
 
 export type PortfolioState = {
@@ -37,7 +37,6 @@ const emptyApartment = (): Apartment => {
     worksCost: 0,
     charges: [],
     revenues: [],
-    risks: [],
     createdAt: now,
     updatedAt: now,
   };
@@ -52,9 +51,6 @@ const withSeed = (): Apartment[] => {
   ];
   const baseRevenues = (monthly: number): Revenue[] => [
     { id: uid(), type: 'Loyer', monthlyAmount: monthly },
-  ];
-  const baseRisks = (): Risk[] => [
-    { id: uid(), label: 'Vacance locative ponctuelle' },
   ];
   return [
     {
@@ -78,7 +74,6 @@ const withSeed = (): Apartment[] => {
       worksCost: 6000,
       charges: baseCharges('1'),
       revenues: baseRevenues(1000),
-      risks: baseRisks(),
       createdAt: now,
       updatedAt: now,
     },
@@ -103,7 +98,6 @@ const withSeed = (): Apartment[] => {
       worksCost: 8000,
       charges: baseCharges('2'),
       revenues: baseRevenues(1100),
-      risks: baseRisks(),
       createdAt: now,
       updatedAt: now,
     },
@@ -145,7 +139,6 @@ export const usePortfolioStore = create<PortfolioState>()(
           name: `${source.name} (copie)`,
           charges: source.charges.map((c) => ({ ...c, id: uid() })),
           revenues: source.revenues.map((r) => ({ ...r, id: uid() })),
-          risks: source.risks.map((r) => ({ ...r, id: uid() })),
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
@@ -165,7 +158,6 @@ export const usePortfolioStore = create<PortfolioState>()(
           id: a.id || uid(),
           charges: a.charges?.map((c) => ({ ...c, id: c.id || uid() })) || [],
           revenues: a.revenues?.map((r) => ({ ...r, id: r.id || uid() })) || [],
-          risks: a.risks?.map((r) => ({ ...r, id: r.id || uid() })) || [],
           createdAt: a.createdAt || new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         }));
@@ -178,4 +170,3 @@ export const usePortfolioStore = create<PortfolioState>()(
 
 export const createCharge = (): Charge => ({ id: uid(), type: '', amount: 0 });
 export const createRevenue = (): Revenue => ({ id: uid(), type: '', monthlyAmount: 0 });
-export const createRisk = (): Risk => ({ id: uid(), label: '' });

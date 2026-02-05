@@ -9,9 +9,18 @@ type WizardNavProps = {
   onNext: () => void;
   onSkip?: () => void;
   onReturn?: () => void;
+  hideNext?: boolean;
 };
 
-export const WizardNav = ({ atStart, atEnd, onPrev, onNext, onSkip, onReturn }: WizardNavProps) => {
+export const WizardNav = ({
+  atStart,
+  atEnd,
+  onPrev,
+  onNext,
+  onSkip,
+  onReturn,
+  hideNext = false,
+}: WizardNavProps) => {
   return (
     <Stack direction="row" spacing={2} justifyContent="space-between">
       <Button startIcon={<NavigateBeforeIcon />} disabled={atStart} onClick={onPrev}>
@@ -28,9 +37,11 @@ export const WizardNav = ({ atStart, atEnd, onPrev, onNext, onSkip, onReturn }: 
             Passer cette étape
           </Button>
         )}
-        <Button endIcon={<NavigateNextIcon />} disabled={atEnd} variant="contained" onClick={onNext}>
-          Suivant
-        </Button>
+        {!hideNext && (
+          <Button endIcon={<NavigateNextIcon />} disabled={atEnd} variant="contained" onClick={onNext}>
+            Suivant
+          </Button>
+        )}
       </Stack>
     </Stack>
   );

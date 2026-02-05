@@ -1,8 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
   Box,
   Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   Grid,
   LinearProgress,
   Stack,
@@ -22,12 +25,11 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
-import { usePortfolioStore, createCharge, createRevenue, createRisk } from '../store/portfolioStore';
-import { calculateApartmentMetrics } from '../services/calculations/calculations';
+import { usePortfolioStore, createCharge, createRevenue } from '../store/portfolioStore';
+import { calculateApartmentMetrics, getMissingEssentials, isEssentialsCompleted } from '../services/calculations/calculations';
 import { NumberField } from '../components/NumberField';
 import { ChargesTable } from '../components/ChargesTable';
 import { RevenuesTable } from '../components/RevenuesTable';
-import { RisksList } from '../components/RisksList';
 import { ResultsPanel } from '../components/ResultsPanel';
 import { formatCurrency } from '../utils/format/currency';
 import { PageHeader } from '../components/layout/PageHeader';
@@ -43,11 +45,20 @@ export const ApartmentDetail = () => {
   const { apartments, setApartment, deleteApartment, duplicateApartment, resetApartment } = usePortfolioStore();
   const apartment = apartments.find((a) => a.id === id);
   const [activeStep, setActiveStep] = useState(0);
+  const [analysisModalOpen, setAnalysisModalOpen] = useState(false);
 
   const metrics = useMemo(() =>
     apartment ? calculateApartmentMetrics(apartment) : null,
     [apartment]
   );
+  const missingFields = useMemo(() => (apartment ? getMissingEssentials(apartment) : []), [apartment]);
+  const missingKeys = useMemo(() => new Set(missingFields.map((f) => f.key)), [missingFields]);
+  const essentialsOk = apartment ? isEssentialsCompleted(apartment) : false;
+  const lastEssentialsRef = useRef(essentialsOk);
+
+  useEffect(() => {
+    lastEssentialsRef.current = essentialsOk;
+  }, [apartment?.id, essentialsOk]);
 
   if (!apartment || !metrics) {
     return (
@@ -126,6 +137,8 @@ export const ApartmentDetail = () => {
               label="Prix d'achat"
               value={apartment.purchasePrice}
               onChange={(v) => setApartment(apartment.id, { purchasePrice: v })}
+              error={missingKeys.has('purchasePrice')}
+              helperText={missingKeys.has('purchasePrice') ? 'Champ requis' : undefined}
             />
             <InlineHelp text="Prix hors travaux." />
           </Grid>
@@ -149,6 +162,7 @@ export const ApartmentDetail = () => {
     {
       label: 'Frais banque',
       description: 'Frais de dossier, courtage et garanties.',
+      optional: true,
       content: (
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
@@ -185,6 +199,8 @@ export const ApartmentDetail = () => {
               label="Apport"
               value={apartment.downPayment}
               onChange={(v) => setApartment(apartment.id, { downPayment: v })}
+              error={missingKeys.has('downPayment')}
+              helperText={missingKeys.has('downPayment') ? 'Champ requis' : undefined}
             />
           </Grid>
           <Grid item xs={12} md={4}>
@@ -193,6 +209,8 @@ export const ApartmentDetail = () => {
               value={apartment.loanYears}
               onChange={(v) => setApartment(apartment.id, { loanYears: v })}
               step={1}
+              error={missingKeys.has('loanYears')}
+              helperText={missingKeys.has('loanYears') ? 'Champ requis' : undefined}
             />
           </Grid>
           <Grid item xs={12} md={4}>
@@ -204,6 +222,7 @@ export const ApartmentDetail = () => {
               }
               helperText="Ex: 3,2 = 3,2 %. Laisser vide ou 0 pour taux par défaut."
               step={0.1}
+              error={missingKeys.has('annualInterestRate')}
             />
           </Grid>
           <Grid item xs={12} md={6}>
@@ -219,6 +238,7 @@ export const ApartmentDetail = () => {
     {
       label: 'Travaux',
       description: 'Budget travaux et mises aux normes.',
+      optional: true,
       content: (
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
@@ -235,33 +255,32 @@ export const ApartmentDetail = () => {
       label: 'Charges',
       description: 'Charges annuelles, taxe foncière, copropriété, entretien.',
       content: (
-        <ChargesTable
-          charges={apartment.charges}
-          onChange={(charges) => setApartment(apartment.id, { charges })}
-          onAdd={() => setApartment(apartment.id, { charges: [...apartment.charges, createCharge()] })}
-        />
+        <Stack spacing={1}>
+          {missingKeys.has('charges') && (
+            <Typography color="error">Ajoutez au moins une charge annuelle.</Typography>
+          )}
+          <ChargesTable
+            charges={apartment.charges}
+            onChange={(charges) => setApartment(apartment.id, { charges })}
+            onAdd={() => setApartment(apartment.id, { charges: [...apartment.charges, createCharge()] })}
+          />
+        </Stack>
       ),
     },
     {
       label: 'Revenus',
       description: 'Revenus locatifs mensuels.',
       content: (
-        <RevenuesTable
-          revenues={apartment.revenues}
-          onChange={(revenues) => setApartment(apartment.id, { revenues })}
-          onAdd={() => setApartment(apartment.id, { revenues: [...apartment.revenues, createRevenue()] })}
-        />
-      ),
-    },
-    {
-      label: 'Risques',
-      description: 'Risques identifiés pour ce bien.',
-      content: (
-        <RisksList
-          risks={apartment.risks}
-          onChange={(risks) => setApartment(apartment.id, { risks })}
-          onAdd={() => setApartment(apartment.id, { risks: [...apartment.risks, createRisk()] })}
-        />
+        <Stack spacing={1}>
+          {missingKeys.has('revenues') && (
+            <Typography color="error">Ajoutez au moins un loyer mensuel.</Typography>
+          )}
+          <RevenuesTable
+            revenues={apartment.revenues}
+            onChange={(revenues) => setApartment(apartment.id, { revenues })}
+            onAdd={() => setApartment(apartment.id, { revenues: [...apartment.revenues, createRevenue()] })}
+          />
+        </Stack>
       ),
     },
   ];
@@ -307,7 +326,7 @@ export const ApartmentDetail = () => {
               Remettre à zéro
             </Button>
             <Button
-              variant="contained"
+              variant="outlined"
               startIcon={<DeleteOutlineIcon />}
               color="error"
               onClick={() => {
@@ -361,9 +380,18 @@ export const ApartmentDetail = () => {
                   atStart={atStart}
                   atEnd={atEnd}
                   onPrev={() => setActiveStep((s) => Math.max(0, s - 1))}
-                  onNext={() => setActiveStep((s) => Math.min(steps.length - 1, s + 1))}
-                  onSkip={!atEnd && activeStep >= 4 ? () => setActiveStep((s) => Math.min(steps.length - 1, s + 1)) : undefined}
+                  onNext={() => {
+                    setActiveStep((s) => Math.min(steps.length - 1, s + 1));
+                    const modalKey = `roi-analysis-modal-${apartment.id}`;
+                    if (essentialsOk && !lastEssentialsRef.current && localStorage.getItem(modalKey) !== '1') {
+                      localStorage.setItem(modalKey, '1');
+                      setAnalysisModalOpen(true);
+                    }
+                    lastEssentialsRef.current = essentialsOk;
+                  }}
+                  onSkip={!atEnd && steps[activeStep].optional ? () => setActiveStep((s) => Math.min(steps.length - 1, s + 1)) : undefined}
                   onReturn={atEnd ? () => navigate('/portfolio') : undefined}
+                  hideNext={steps[activeStep].label === 'Revenus'}
                 />
               </Stack>
             </SectionCard>
@@ -372,6 +400,20 @@ export const ApartmentDetail = () => {
 
         <Box>
           <Stack spacing={2} sx={{ position: { md: 'sticky' }, top: { md: 96 } }}>
+            <Button
+              variant={essentialsOk ? 'contained' : 'outlined'}
+              onClick={() => navigate(`/portfolio/${apartment.id}/analyse`)}
+              sx={
+                essentialsOk
+                  ? {
+                      fontWeight: 800,
+                      boxShadow: '0 10px 24px rgba(26,79,216,0.25)',
+                    }
+                  : undefined
+              }
+            >
+              Voir détails avancés
+            </Button>
             <ResultsPanel metrics={metrics} />
             <Card variant="outlined">
               <CardContent>
@@ -401,6 +443,29 @@ export const ApartmentDetail = () => {
           </Stack>
         </Box>
       </Box>
+
+      <Dialog open={analysisModalOpen} onClose={() => setAnalysisModalOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Analyse complète disponible</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2}>
+            <Typography color="text.secondary">
+              Vos informations essentielles sont complétées. Consultez maintenant l’analyse complète : cashflow,
+              rendements, coût total du crédit, scénarios…
+            </Typography>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+              <Button
+                variant="contained"
+                onClick={() => navigate(`/portfolio/${apartment.id}/analyse`)}
+              >
+                Voir l’analyse complète
+              </Button>
+              <Button variant="outlined" onClick={() => setAnalysisModalOpen(false)}>
+                Plus tard
+              </Button>
+            </Stack>
+          </Stack>
+        </DialogContent>
+      </Dialog>
     </Stack>
   );
 };
