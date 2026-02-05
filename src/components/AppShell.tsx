@@ -41,6 +41,9 @@ export const AppShell = ({ children }: AppShellProps) => {
             <Button component={RouterLink} to="/comparateur" color="primary" variant="text">
               Comparateur
             </Button>
+            <Button component={RouterLink} to="/contact" color="primary" variant="text">
+              Contact
+            </Button>
           </Stack>
         </Toolbar>
       </AppBar>

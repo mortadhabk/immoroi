@@ -51,6 +51,10 @@ export const theme = createTheme({
           '&:hover': {
             transform: 'translateY(-1px)',
           },
+          '&.Mui-disabled': {
+            color: '#ffffff',
+            backgroundColor: '#c7d2e5',
+          },
         },
         contained: {
           backgroundImage: 'linear-gradient(120deg, #1f4b99, #6a7aa6)',
