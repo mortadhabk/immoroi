@@ -1,5 +1,6 @@
 import { AppBar, Toolbar, Typography, Button, Stack, Container, Box } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
+import { CoffeeDonationFloatingButton } from './CoffeeDonationFloatingButton';
 
 type AppShellProps = {
   children: React.ReactNode;
@@ -50,6 +51,7 @@ export const AppShell = ({ children }: AppShellProps) => {
       <Container maxWidth="lg" sx={{ py: { xs: 3, md: 5 }, px: { xs: 1, sm: 3, md: 4 } }}>
         {children}
       </Container>
+      <CoffeeDonationFloatingButton />
     </>
   );
 };
